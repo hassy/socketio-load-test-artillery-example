@@ -1,0 +1,19 @@
+{
+  "name": "socketio-load-test-artillery-example",
+  "version": "1.0.0",
+  "description": "Load testing scripts for Socket.io example chat app",
+  "main": "index.js",
+  "scripts": {
+    "load": "artillery run socketio-chat-load-test.yaml",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "socketio",
+    "load-test"
+  ],
+  "author": "Hassy Veldstra <h@artillery.io>",
+  "license": "MPL-2.0",
+  "dependencies": {
+    "artillery": "1.5.0-19"
+  }
+}

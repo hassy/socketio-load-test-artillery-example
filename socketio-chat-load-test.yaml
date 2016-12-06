@@ -1,3 +1,7 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 config:
   target: "http://localhost:3000"
   phases:
@@ -11,6 +15,7 @@ config:
 
 scenarios:
   - name: "A user that just lurks"
+    weight: 75
     engine: "socketio"
     flow:
       - get:
@@ -21,7 +26,7 @@ scenarios:
       - think: 60
 
   - name: "A mostly quiet user"
-    weight: 2
+    weight: 15
     engine: "socketio"
     flow:
       - get:
@@ -30,16 +35,13 @@ scenarios:
           channel: "add user"
           data: "quiet-{{ $randomString() }}"
       - think: 5
-      # - emit:
-      #     channel: "typing"
-      #     data: ""
-      # - think: 1
       - emit:
           channel: "new message"
           data: "{{ greeting }}"
       - think: 60
 
   - name: "A chatty user"
+    weight: 10
     engine: "socketio"
     flow:
       - get:
