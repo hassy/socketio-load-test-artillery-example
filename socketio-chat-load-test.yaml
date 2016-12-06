@@ -1,0 +1,60 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 10
+      arrivalRate: 1
+    - duration: 10
+      arrivalRate: 5
+  variables:
+    greeting: ["hello", "goedemorgen", "добрый день", "guten tag", "bonjour", "hola"]
+  processor: "./functions.js"
+
+scenarios:
+  - name: "A user that just lurks"
+    engine: "socketio"
+    flow:
+      - get:
+          url: "/"
+      - emit:
+          channel: "add user"
+          data: "lurker-{{$randomString()}}"
+      - think: 60
+
+  - name: "A mostly quiet user"
+    weight: 2
+    engine: "socketio"
+    flow:
+      - get:
+          url: "/"
+      - emit:
+          channel: "add user"
+          data: "quiet-{{ $randomString() }}"
+      - think: 5
+      # - emit:
+      #     channel: "typing"
+      #     data: ""
+      # - think: 1
+      - emit:
+          channel: "new message"
+          data: "{{ greeting }}"
+      - think: 60
+
+  - name: "A chatty user"
+    engine: "socketio"
+    flow:
+      - get:
+          url: "/"
+      - emit:
+          channel: "add user"
+          data: "chatty-{{ $randomString() }}"
+      - emit:
+          channel: "new message"
+          data: "{{ greeting }}"
+      - loop:
+          - function: "setMessage"
+          - emit:
+              channel: "new message"
+              data: "{{ message }}"
+          - think: 10
+        count: 10
+      - think: 60
